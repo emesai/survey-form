@@ -1,7 +1,6 @@
 # 📊 Survey Form App  
 
 Fullstack survey form application built with **Express.js + PostgreSQL + Sequelize** for the backend and **Next.js** for the frontend.  
-Supports employee satisfaction survey with Likert scale and dynamic questions.
 
 ---
 
@@ -111,11 +110,6 @@ This will start:
 - **Frontend (Next.js)**: [http://localhost:3000](http://localhost:3000)  
 - **API (Express)**: [http://localhost:5000](http://localhost:5000)  
 
-### Example endpoints  
-
-- `GET /questions` → fetch all survey questions  
-- `POST /responses` → submit survey form  
-
 ---
 
 ## 📝 Development Tips  
@@ -138,11 +132,6 @@ docker-compose up --build
 
 ---
 
-## 📸 Screenshots  
-
-👉 (Optional: tambahin screenshot frontend form & summary di sini)  
-
----
 
 ## 📜 License  
 
