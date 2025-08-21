@@ -4,6 +4,25 @@ Fullstack survey form application built with **Express.js + PostgreSQL + Sequeli
 
 ---
 
+## 🛠️ Prerequisites
+
+```bash
+# Make sure you have these installed on your machine:
+
+# 🐳 Docker (latest version recommended)
+# 👉 https://docs.docker.com/get-docker/
+
+# 🔧 Docker Compose
+# 👉 https://docs.docker.com/compose/install/
+
+# ✅ Verify installation
+docker --version
+docker-compose --version
+
+```
+
+---
+
 ## 🚀 Tech Stack  
 
 - **Backend**: Express.js + Sequelize ORM  
@@ -36,25 +55,7 @@ cd survey-form
 
 ---
 
-### 2️⃣ Install dependencies  
-
-Backend:  
-
-```bash
-cd backend
-yarn install
-```
-
-Frontend:  
-
-```bash
-cd ../frontend
-yarn install
-```
-
----
-
-### 3️⃣ Setup environment  
+### 2️⃣ Setup environment (optional)  
 
 #### Backend (`backend/.env`)  
 
@@ -63,9 +64,7 @@ DB_HOST=db
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
-DB_NAME=survey_form_db
-
-PORT=5000
+DB_NAME=survey_form
 ```
 
 #### Frontend (`frontend/.env.local`)  
@@ -76,32 +75,22 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 
 ---
 
-### 4️⃣ Run migrations & seeders  
 
-From backend folder:  
-
-```bash
-cd backend
-
-# create tables
-npx sequelize-cli db:migrate
-
-# insert default questions
-npx sequelize-cli db:seed:all
-```
-
----
-
-### 5️⃣ Run with Docker Compose  
+### 3️⃣ Installation
 
 ```bash
-docker-compose up --build
-```
+# build
+docker-compose build 
 
-This will start:  
-- **Postgres DB** → port `5432`  
-- **Backend API** → port `5000`  
-- **Frontend** → port `3000`  
+# run database
+docker-compose up -d db
+
+# migrate and seed
+docker-compose run --rm migrate
+
+# run services
+docker-compose up -d backend frontend
+```
 
 ---
 
@@ -112,31 +101,9 @@ This will start:
 
 ---
 
-## 📝 Development Tips  
-
-- If you want to reset DB completely:  
-
-```bash
-npx sequelize-cli db:drop
-npx sequelize-cli db:create
-npx sequelize-cli db:migrate
-npx sequelize-cli db:seed:all
-```
-
-- For fresh Docker run (drop all data):  
-
-```bash
-docker-compose down -v
-docker-compose up --build
-```
-
----
-
 
 ## 📜 License  
 
 MIT License © 2025  
 
 ---
-
-⚡️ Ready to collect employee feedback in minutes!

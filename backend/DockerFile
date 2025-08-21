@@ -3,9 +3,13 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY package.json yarn.lock ./
+ENV NODE_ENV=production
 RUN yarn install --frozen-lockfile --production
+
+RUN yarn global add sequelize-cli
 
 COPY . .
 
 EXPOSE 5000
+
 CMD ["yarn", "start"]

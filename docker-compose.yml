@@ -28,8 +28,25 @@ services:
       DB_PASSWORD: postgres
       DB_NAME: survey_form
       DB_PORT: 5432
+      NODE_ENV: production
     ports:
       - "5000:5000"
+
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: DockerFile
+    working_dir: /app
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: survey_form
+      DB_PORT: 5432
+      NODE_ENV: production
+    command: sh -c "sequelize db:migrate && sequelize db:seed:all"
 
   frontend:
     build:
@@ -41,6 +58,7 @@ services:
       - backend
     environment:
       NEXT_PUBLIC_API_URL: http://backend:5000
+      NODE_ENV: production
     ports:
       - "3000:3000"
 
