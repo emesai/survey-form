@@ -3,36 +3,38 @@ const responseRepository = require("../repositories/response.repository");
 const { calculateSatisfaction } = require("../utils/global");
 
 class ResponseService {
-  async submitForm({ employee, answers }) {
-    const existing = await Employee.findOne({
-      where: { email: employee.email },
-    });
-    if (existing) throw new Error("Email already exists");
-
-    const allQuestions = await Question.findAll();
-    const questionIds = allQuestions.map((q) => q.id);
-
-    if (answers.length !== allQuestions.length) {
-      throw new Error(
-        `All questions must be answered. Expected ${allQuestions.length}, got ${answers.length}`
-      );
+  #validateEmployee(employee) {
+    const requiredFields = ["first_name", "last_name", "email", "department", "years_with_company"];
+    for (const f of requiredFields) {
+      if (!employee[f]) throw new Error(`Field ${f} is required`);
     }
+  }
 
+  #validateAnswers(answers, questionIds) {
+    if (answers.length !== questionIds.length) {
+      throw new Error(`All questions must be answered. Expected ${questionIds.length}, got ${answers.length}`);
+    }
     for (const ans of answers) {
       if (!questionIds.includes(ans.question_id)) {
         throw new Error(`Invalid question_id: ${ans.question_id}`);
       }
       if (ans.answer_value < 1 || ans.answer_value > 5) {
-        throw new Error(
-          `Answer for question_id ${ans.question_id} must be between 1 and 5`
-        );
+        throw new Error(`Answer for question_id ${ans.question_id} must be between 1 and 5`);
       }
     }
+  }
 
-    const { employee: savedEmployee } = await responseRepository.createResponse(
-      employee,
-      answers
-    );
+  async submitForm({ employee, answers }) {
+    const existing = await Employee.findOne({ where: { email: employee.email } });
+    if (existing) throw new Error("Email already exists");
+
+    const allQuestions = await Question.findAll();
+    const questionIds = allQuestions.map((q) => q.id);
+
+    this.#validateEmployee(employee);
+    this.#validateAnswers(answers, questionIds);
+
+    const savedEmployee = await responseRepository.createResponse(employee, answers);
 
     const enrichedAnswers = answers.map((a) => {
       const q = allQuestions.find((q) => q.id === a.question_id);
@@ -43,15 +45,9 @@ class ResponseService {
       };
     });
 
-    const satisfaction = calculateSatisfaction(
-      answers.map((a) => a.answer_value)
-    );
+    const satisfaction = calculateSatisfaction(answers.map((a) => a.answer_value));
 
-    return {
-      employee: savedEmployee,
-      answers: enrichedAnswers,
-      satisfaction,
-    };
+    return { employee: savedEmployee, answers: enrichedAnswers, satisfaction };
   }
 }
 
